@@ -7,7 +7,7 @@ from pydantic import BaseModel
 from concurrent.futures import ProcessPoolExecutor
 
 
-class PackageDependenciesParsingError(BaseModel):
+class PackageDependenciesParsingError(Exception):
     pass
 
 
