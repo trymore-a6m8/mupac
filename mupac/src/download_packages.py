@@ -20,9 +20,9 @@ def get_download_url_from_page(page_html: str, server: str) -> str:
     soup = BeautifulSoup(page_html, "html.parser")
 
     for server_ in [server, "security.ubuntu.com/ubuntu"]:
-        download_url_a = soup.find("a", href=lambda url: url and server_ in url)
+        download_url_a = soup.find("a", href=lambda url: url and server_ in url) # type: ignore
         if download_url_a is not None:
-            return download_url_a["href"]
+            return download_url_a["href"] # type: ignore
 
     raise DownloadPageParsingError
 
@@ -50,7 +50,7 @@ async def download(pool_exec: ProcessPoolExecutor, url: str, platform: str, serv
 
 async def main(platform: str, server: str) -> int:
 
-    target_folder = Path(os.path.dirname(__file__) + "/packages")
+    target_folder = Path("./packages")
     os.makedirs(target_folder, exist_ok=True)
     for file in target_folder.iterdir():
         if file.is_file():
@@ -58,7 +58,7 @@ async def main(platform: str, server: str) -> int:
 
     pool_exec = ProcessPoolExecutor()
 
-    pending = set()
+    pending: set[asyncio.Task[None]] = set()
 
     with open("packages_list.txt", "r", encoding="utf-8") as file:
         for line in file.readlines():
@@ -73,6 +73,8 @@ async def main(platform: str, server: str) -> int:
                 print(f"Package downloading error: {task_exception}")
 
     pool_exec.shutdown()
+
+    return 0
 
 
 if __name__ == "__main__":

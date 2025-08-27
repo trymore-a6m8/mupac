@@ -27,8 +27,8 @@ def parse_package_dep(page_html: str) -> list[str]:
     except IndexError:
         return []
 
-    for li in uldep.find_all("li"):
-        dep.append("https://packages.ubuntu.com" + str(li.find("a")["href"]))
+    for li in uldep.find_all("li"): # type: ignore
+        dep.append("https://packages.ubuntu.com" + str(li.find("a")["href"])) # type: ignore
 
     return dep
 
@@ -51,7 +51,7 @@ async def get_package_data(pool_exec: ProcessPoolExecutor, parent_url: str) -> P
     if not good_response:
         raise PackageDependenciesParsingError
 
-    required_packages: list[str] = await asyncio.get_running_loop().run_in_executor(pool_exec, parse_package_dep, *(page_html,))  
+    required_packages: list[str] = await asyncio.get_running_loop().run_in_executor(pool_exec, parse_package_dep, *(page_html,))   # type: ignore
 
     return Package(
         url=parent_url,
